@@ -1,0 +1,108 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+
+  strategy:
+    type: RollingUpdate  # 무중단 배포를 위한 롤링 업데이트 전략
+    rollingUpdate:
+      maxUnavailable: 0  # 항상 최소 하나의 파드는 유지
+      maxSurge: 1        # 새 파드를 1개까지 추가 생성
+  
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: busybox
+        command: ['sh', '-c', 'until nc -zv mysql 3306; do echo "Waiting for DB..."; sleep 2; done']
+      
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - my-app
+              topologyKey: "kubernetes.io/hostname"
+      
+      containers:
+        # Container for Django backend - matched by backend-service
+      - name: backend
+        image: broo22/django-backend:latest
+        
+        ports:
+        - containerPort: 8000
+        
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        
+        envFrom:
+        - configMapRef:
+            name: app-config    # ConfigMap 주입
+        - secretRef:
+            name: app-secret    # Secret 주입
+        
+        lifecycle:
+          postStart:
+            exec:
+              command: ["sh", "-c", "python manage.py migrate --noinput"]
+          #  컨테이너가 살아있는지 주기적으로 확인
+        livenessProbe:                
+            httpGet:
+              path: /api/hello
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+        #  서비스 요청 수락 가능한 상태인지 확인
+        readinessProbe:
+          httpGet:
+            path: /api/hello
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 2    
+      
+      # Container for Vanilla frontend - matched by frontend-service
+      # - name: frontend
+      #   image: broo22/vanilla-frontend:latest
+        
+      #   ports:
+      #   - containerPort: 80
+        
+      #   resources:
+      #     requests:
+      #       memory: "64Mi"
+      #       cpu: "100m"
+      #     limits:
+      #       memory: "128Mi"
+      #       cpu: "200m"
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: my-app-pdb
+spec:
+  selector:
+    matchLabels:
+      app: my-app
+  minAvailable: 1

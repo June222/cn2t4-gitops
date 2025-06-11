@@ -1,0 +1,64 @@
+# === 일반 ===
+*.log
+*.tmp
+*.bak
+*.DS_Store
+Thumbs.db
+.env
+.env.*
+.vscode/
+.idea/
+*.swp
+
+# === Terraform ===
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfvars
+terraform.tfvars.json
+crash.log
+override.tf
+override.tf.json
+*.backup
+
+# === Ansible ===
+*.retry
+*.pem
+*.vault
+*.log
+inventory.ini
+host_vars/
+group_vars/
+
+# === Kubernetes YAML ===
+*.orig
+*.bak
+kubeconfig
+kubeconfig.yaml
+
+# === Helm ===
+charts/
+*.tgz
+helm-release.yaml
+
+# === Kustomize ===
+.kustomize/
+
+# === CI/CD 도구 ===
+# Argo CD 자동 동기화 상태 파일
+*.argocd-source.yaml
+*.argocd-diff.yaml
+
+# === Credential/Secret 보호 ===
+secret.yaml
+secrets.yaml
+secrets/*.yaml
+config/*.enc.yaml
+*.key
+*.crt
+
+# === Output & Temp ===
+output/
+tmp/
+__pycache__/
+*.pyc
