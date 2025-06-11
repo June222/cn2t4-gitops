@@ -39,6 +39,7 @@ spec:
       name: mysql-storage
     spec:
       accessModes: ["ReadWriteOnce"]
+      storageClassName: gp2  # 또는 ebs-sc, standard 등 클러스터에 존재하는 클래스
       resources:
         requests:
           storage: 1Gi
