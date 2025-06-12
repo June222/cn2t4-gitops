@@ -59,10 +59,10 @@ spec:
         # - secretRef:
         #     name: app-secret    # Secret 주입
         
-        lifecycle:
-          postStart:
-            exec:
-              command: ["sh", "-c", "python manage.py migrate --noinput"]
+        # lifecycle:
+        #   postStart:
+        #     exec:
+        #       command: ["sh", "-c", "python manage.py migrate --noinput"]
           #  컨테이너가 살아있는지 주기적으로 확인
         livenessProbe:                
             httpGet:
