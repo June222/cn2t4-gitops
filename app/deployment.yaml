@@ -40,7 +40,7 @@ spec:
       containers:
         # Container for Django backend - matched by backend-service
       - name: backend
-        image: broo22/django-backend:latest
+        image: 661393609088.dkr.ecr.ap-northeast-2.amazonaws.com/django-backend:latest
         
         ports:
         - containerPort: 8000
