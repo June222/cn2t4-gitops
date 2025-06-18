@@ -37,7 +37,7 @@ spec:
       containers:
         # Container for Django backend - matched by backend-service
         - name: backend
-          image: 661393609088.dkr.ecr.ap-northeast-2.amazonaws.com/django-backend:c96e831
+          image: 661393609088.dkr.ecr.ap-northeast-2.amazonaws.com/django-backend:621e725
           ports:
             - containerPort: 8000
           resources:
@@ -98,4 +98,4 @@ spec:
   template:
     spec:
       containers:
-        - image: 661393609088.dkr.ecr.ap-northeast-2.amazonaws.com/django-backend:c96e831
+        - image: 661393609088.dkr.ecr.ap-northeast-2.amazonaws.com/django-backend:621e725
