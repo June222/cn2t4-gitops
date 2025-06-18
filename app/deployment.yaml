@@ -95,7 +95,3 @@ spec:
     matchLabels:
       app: my-app
   minAvailable: 1
-  template:
-    spec:
-      containers:
-        - image: 661393609088.dkr.ecr.ap-northeast-2.amazonaws.com/django-backend:621e725
