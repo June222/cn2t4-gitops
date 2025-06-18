@@ -24,14 +24,17 @@ spec:
           command: ['sh', '-c', 'until nc -zv mysql 3306; do echo "Waiting for DB..."; sleep 2; done']
       affinity:
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - my-app
-              topologyKey: "kubernetes.io/hostname"
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - my-app
+                topologyKey: "kubernetes.io/hostname"
+      
       containers:
         # Container for Django backend - matched by backend-service
         - name: backend
